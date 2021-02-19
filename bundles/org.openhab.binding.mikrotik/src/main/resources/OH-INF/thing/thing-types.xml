@@ -38,9 +38,9 @@
 				<default>8728</default>
 			</parameter>
 			<parameter name="login" type="text" required="true">
-				<label>Login</label>
+				<label>Username</label>
 				<default>admin</default>
-				<description>The user login to access the the RouterOS device</description>
+				<description>The username to access the the RouterOS device</description>
 			</parameter>
 			<parameter name="password" type="text" required="true">
 				<label>Password</label>
@@ -153,50 +153,50 @@
 	</thing-type>
 
 
-	<channel-type id="freeSpace">
-		<item-type>Number</item-type>
+	<channel-type id="freeSpace" advanced="true">
+		<item-type>Number:DataAmount</item-type>
 		<label>Free Space</label>
 		<description>Amount of free storage left on device in bytes</description>
-		<state readOnly="true"/>
+		<state readOnly="true" pattern="%d bytes"/>
 	</channel-type>
 
-	<channel-type id="totalSpace">
-		<item-type>Number</item-type>
+	<channel-type id="totalSpace" advanced="true">
+		<item-type>Number:DataAmount</item-type>
 		<label>Total Space</label>
 		<description>Amount of total storage available on device in bytes</description>
-		<state readOnly="true"/>
+		<state readOnly="true" pattern="%d bytes"/>
 	</channel-type>
 
 	<channel-type id="usedSpace">
-		<item-type>Number</item-type>
+		<item-type>Number:Dimensionless</item-type>
 		<label>Used Space %</label>
 		<description>Percentage of used device storage space</description>
 		<state readOnly="true"/>
 	</channel-type>
 
-	<channel-type id="freeMemory">
-		<item-type>Number</item-type>
+	<channel-type id="freeMemory" advanced="true">
+		<item-type>Number:DataAmount</item-type>
 		<label>Free RAM</label>
 		<description>Amount of free memory left on device in bytes</description>
-		<state readOnly="true"/>
+		<state readOnly="true" pattern="%d bytes"/>
 	</channel-type>
 
-	<channel-type id="totalMemory">
-		<item-type>Number</item-type>
+	<channel-type id="totalMemory" advanced="true">
+		<item-type>Number:DataAmount</item-type>
 		<label>Total RAM</label>
 		<description>Amount of total memory available on device in bytes</description>
-		<state readOnly="true"/>
+		<state readOnly="true" pattern="%.2f bytes"/>
 	</channel-type>
 
 	<channel-type id="usedMemory">
-		<item-type>Number</item-type>
+		<item-type>Number:Dimensionless</item-type>
 		<label>Used RAM %</label>
 		<description>Percentage of used device memory</description>
 		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="cpuLoad">
-		<item-type>Number</item-type>
+		<item-type>Number:Dimensionless</item-type>
 		<label>CPU Load %</label>
 		<description>CPU load percentage</description>
 		<state readOnly="true"/>
@@ -204,28 +204,28 @@
 
 
 
-	<channel-type id="interfaceType">
+	<channel-type id="interfaceType" advanced="true">
 		<item-type>String</item-type>
-		<label>Type</label>
+		<label>Interface Type</label>
 		<description>Network interface type</description>
 		<state readOnly="true"/>
 	</channel-type>
 
-	<channel-type id="interfaceName">
+	<channel-type id="interfaceName" advanced="true">
 		<item-type>String</item-type>
 		<label>Interface Name</label>
 		<description>Network interface name</description>
 		<state readOnly="true"/>
 	</channel-type>
 
-	<channel-type id="comment">
+	<channel-type id="comment" advanced="true">
 		<item-type>String</item-type>
 		<label>Comment</label>
 		<description>User-defined comment</description>
 		<state readOnly="true"/>
 	</channel-type>
 
-	<channel-type id="macAddress">
+	<channel-type id="macAddress" advanced="true">
 		<item-type>String</item-type>
 		<label>MAC Address</label>
 		<description>MAC address of the client or interface</description>
@@ -267,7 +267,7 @@
 		<state readOnly="true"/>
 	</channel-type>
 
-	<channel-type id="linkDowns">
+	<channel-type id="linkDowns" advanced="true">
 		<item-type>Number</item-type>
 		<label>Link Downs</label>
 		<description>Amount of link downs</description>
@@ -275,97 +275,97 @@
 	</channel-type>
 
 	<channel-type id="txRate">
-		<item-type>Number</item-type>
+		<item-type>Number:DataTransferRate</item-type>
 		<label>Transmission Rate</label>
 		<description>Rate of data transmission in megabits per second</description>
-		<state readOnly="true"/>
+		<state readOnly="true" pattern="%.2f Mbit/s"/>
 	</channel-type>
 
 	<channel-type id="rxRate">
-		<item-type>Number</item-type>
+		<item-type>Number:DataTransferRate</item-type>
 		<label>Receiving Rate</label>
 		<description>Rate of data receiving in megabits per second</description>
-		<state readOnly="true"/>
+		<state readOnly="true" pattern="%.2f Mbit/s"/>
 	</channel-type>
 
-	<channel-type id="txPacketRate">
+	<channel-type id="txPacketRate" advanced="true">
 		<item-type>Number</item-type>
 		<label>Transmission Packet Rate</label>
 		<description>Rate of data transmission in packets per second</description>
 		<state readOnly="true"/>
 	</channel-type>
 
-	<channel-type id="rxPacketRate">
+	<channel-type id="rxPacketRate" advanced="true">
 		<item-type>Number</item-type>
 		<label>Receiving Packet Rate</label>
 		<description>Rate of data receiving in packets per second</description>
 		<state readOnly="true"/>
 	</channel-type>
 
-	<channel-type id="txBytes">
+	<channel-type id="txBytes" advanced="true">
 		<item-type>Number</item-type>
 		<label>Transmitted Bytes</label>
 		<description>Amount of bytes transmitted</description>
 		<state readOnly="true"/>
 	</channel-type>
 
-	<channel-type id="rxBytes">
+	<channel-type id="rxBytes" advanced="true">
 		<item-type>Number</item-type>
 		<label>Received Bytes</label>
 		<description>Amount of bytes received</description>
 		<state readOnly="true"/>
 	</channel-type>
 
-	<channel-type id="txPackets">
+	<channel-type id="txPackets" advanced="true">
 		<item-type>Number</item-type>
 		<label>Transmitted Packets</label>
 		<description>Amount of packets transmitted</description>
 		<state readOnly="true"/>
 	</channel-type>
 
-	<channel-type id="rxPackets">
+	<channel-type id="rxPackets" advanced="true">
 		<item-type>Number</item-type>
 		<label>Received Packets</label>
 		<description>Amount of packets received</description>
 		<state readOnly="true"/>
 	</channel-type>
 
-	<channel-type id="txDrops">
+	<channel-type id="txDrops" advanced="true">
 		<item-type>Number</item-type>
 		<label>Transmission Drops</label>
 		<description>Amount of packets dropped during transmission</description>
 		<state readOnly="true"/>
 	</channel-type>
 
-	<channel-type id="rxDrops">
+	<channel-type id="rxDrops" advanced="true">
 		<item-type>Number</item-type>
 		<label>Receiving Drops</label>
 		<description>Amount of packets dropped during receiving</description>
 		<state readOnly="true"/>
 	</channel-type>
 
-	<channel-type id="txErrors">
+	<channel-type id="txErrors" advanced="true">
 		<item-type>Number</item-type>
 		<label>Transmission Errors</label>
 		<description>Amount of errors during transmission</description>
 		<state readOnly="true"/>
 	</channel-type>
 
-	<channel-type id="rxErrors">
+	<channel-type id="rxErrors" advanced="true">
 		<item-type>Number</item-type>
 		<label>Receiving Errors</label>
 		<description>Amount of errors during receiving</description>
 		<state readOnly="true"/>
 	</channel-type>
 
-	<channel-type id="defaultName">
+	<channel-type id="defaultName" advanced="true">
 		<item-type>String</item-type>
 		<label>Default Name</label>
 		<description>Interface factory name</description>
 		<state readOnly="true"/>
 	</channel-type>
 
-	<channel-type id="ethernetRate">
+	<channel-type id="ethernetRate" advanced="true">
 		<item-type>String</item-type>
 		<label>Link Rate</label>
 		<description>Ethernet link rate</description>
