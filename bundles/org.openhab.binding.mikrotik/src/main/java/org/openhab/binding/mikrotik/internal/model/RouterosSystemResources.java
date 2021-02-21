@@ -61,11 +61,7 @@ public class RouterosSystemResources extends RouterosBaseData {
     }
 
     public @Nullable Integer getCpuLoad() {
-        if (hasProp("cpu-load")) {
-            String loadPercent = getProp("cpu-load").replace("%", "");
-            return Integer.parseInt(loadPercent);
-        }
-        return null;
+        return getIntProp("cpu-load");
     }
 
     public @Nullable String getUptime() {

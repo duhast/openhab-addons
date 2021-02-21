@@ -29,7 +29,7 @@ public class RouterosThingConfig implements ConfigValidation {
     public int refresh = 10;
 
     public boolean isValid() {
-        return !host.isBlank() && !login.isBlank() && !password.isBlank();
+        return !host.isBlank() && !login.isBlank() && !password.isBlank() && refresh > 0 && port > 0;
     }
 
     @Override

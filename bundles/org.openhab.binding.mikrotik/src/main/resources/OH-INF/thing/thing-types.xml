@@ -98,7 +98,7 @@
 		<representation-property>name</representation-property>
 		<config-description>
 			<parameter name="name" type="text" required="true">
-				<label>Name</label>
+				<label>Interface Name</label>
 				<description>RouterOS Interface name (i.e. ether1)</description>
 			</parameter>
 		</config-description>
@@ -157,49 +157,49 @@
 		<item-type>Number:DataAmount</item-type>
 		<label>Free Space</label>
 		<description>Amount of free storage left on device in bytes</description>
-		<state readOnly="true" pattern="%d bytes"/>
+		<state readOnly="true" pattern="%d B"/>
 	</channel-type>
 
 	<channel-type id="totalSpace" advanced="true">
 		<item-type>Number:DataAmount</item-type>
 		<label>Total Space</label>
 		<description>Amount of total storage available on device in bytes</description>
-		<state readOnly="true" pattern="%d bytes"/>
+		<state readOnly="true" pattern="%d B"/>
 	</channel-type>
 
 	<channel-type id="usedSpace">
 		<item-type>Number:Dimensionless</item-type>
 		<label>Used Space %</label>
 		<description>Percentage of used device storage space</description>
-		<state readOnly="true"/>
+		<state readOnly="true" min="0" max="100" pattern="%d %%"/>
 	</channel-type>
 
 	<channel-type id="freeMemory" advanced="true">
 		<item-type>Number:DataAmount</item-type>
 		<label>Free RAM</label>
 		<description>Amount of free memory left on device in bytes</description>
-		<state readOnly="true" pattern="%d bytes"/>
+		<state readOnly="true" pattern="%d B"/>
 	</channel-type>
 
 	<channel-type id="totalMemory" advanced="true">
 		<item-type>Number:DataAmount</item-type>
 		<label>Total RAM</label>
 		<description>Amount of total memory available on device in bytes</description>
-		<state readOnly="true" pattern="%.2f bytes"/>
+		<state readOnly="true" pattern="%d B"/>
 	</channel-type>
 
 	<channel-type id="usedMemory">
 		<item-type>Number:Dimensionless</item-type>
 		<label>Used RAM %</label>
 		<description>Percentage of used device memory</description>
-		<state readOnly="true"/>
+		<state readOnly="true" min="0" max="100" pattern="%d %%"/>
 	</channel-type>
 
 	<channel-type id="cpuLoad">
 		<item-type>Number:Dimensionless</item-type>
 		<label>CPU Load %</label>
 		<description>CPU load percentage</description>
-		<state readOnly="true"/>
+		<state readOnly="true" min="0" max="100" pattern="%d %%"/>
 	</channel-type>
 
 

@@ -279,6 +279,7 @@ public class RouterosDevice {
     private void updateResources() throws MikrotikApiException {
         logger.trace("Executing '{}' on {}...", CMD_PRINT_RESOURCE, host);
         List<Map<String, String>> response = connection.execute(CMD_PRINT_RESOURCE);
+        logger.trace("Got resource props from {}: {}", host, response.get(0));
         this.resourcesCache = new RouterosSystemResources(response.get(0));
     }
 

@@ -47,14 +47,16 @@ The RouterOS Bridge configuration parameters are:
 
 
 ### Bridge Channels
-* <kbd>Number</kbd> `freeSpace` _(read-only)_ - Amount of free storage left on device in bytes
-* <kbd>Number</kbd> `totalSpace` _(read-only)_ - Amount of total storage available on device in bytes
-* <kbd>Number</kbd> `usedSpace` _(read-only)_ - Percentage of used device storage space
-* <kbd>Number</kbd> `freeMemory` _(read-only)_ - Amount of free memory left on device in bytes
-* <kbd>Number</kbd> `totalMemory` _(read-only)_ - Amount of total memory available on device in bytes
-* <kbd>Number</kbd> `usedMemory` _(read-only)_ - Percentage of used device memory
-* <kbd>Number</kbd> `cpuLoad` _(read-only)_ - CPU load percentage
-* <kbd>String</kbd> `uptime` _(read-only)_ - Duration while thing is up
+* <kbd>Number:DataAmount</kbd> `freeSpace` _(read-only)_ - Amount of free storage left on device in bytes
+* <kbd>Number:DataAmount</kbd> `totalSpace` _(read-only)_ - Amount of total storage available on device in bytes
+* <kbd>Number:Dimensionless</kbd> `usedSpace` _(read-only)_ - Percentage of used device storage space
+* <kbd>Number:DataAmount</kbd> `freeMemory` _(read-only)_ - Amount of free memory left on device in bytes
+* <kbd>Number:DataAmount</kbd> `totalMemory` _(read-only)_ - Amount of total memory available on device in bytes
+* <kbd>Number:Dimensionless</kbd> `usedMemory` _(read-only)_ - Percentage of used device memory
+* <kbd>Number:Dimensionless</kbd> `cpuLoad` _(read-only)_ - CPU load percentage
+* <kbd>String</kbd> `uptime` _(read-only)_ - For how long the device is working
+* <kbd>DateTime</kbd> `upSince` _(read-only)_ - Since when the device is working
+
 
 ## WiFi Client Thing Configuration
 > Thing type: `wifiRegistration`
@@ -81,8 +83,8 @@ The WiFi client thing configuration parameters are:
 * <kbd>String</kbd> `uptime` _(read-only)_ - Duration while thing is up
 * <kbd>DateTime</kbd> `upSince` _(read-only)_ - Time when thing got up
 * <kbd>DateTime</kbd> `lastSeen` _(read-only)_ - Time of when the client was last seen connected
-* <kbd>Number</kbd> `txRate` _(read-only)_ - Rate of data transmission in megabits per second
-* <kbd>Number</kbd> `rxRate` _(read-only)_ - Rate of data receiving in megabits per second
+* <kbd>Number:DataTransferRate</kbd> `txRate` _(read-only)_ - Rate of data transmission in megabits per second
+* <kbd>Number:DataTransferRate</kbd> `rxRate` _(read-only)_ - Rate of data receiving in megabits per second
 * <kbd>Number</kbd> `txPacketRate` _(read-only)_ - Rate of data transmission in packets per second
 * <kbd>Number</kbd> `rxPacketRate` _(read-only)_ - Rate of data receiving in packets per second
 * <kbd>Number</kbd> `txBytes` _(read-only)_ - Amount of bytes transmitted
@@ -124,8 +126,8 @@ Common for all kinds of interfaces:
 * <kbd>DateTime</kbd> `lastLinkDownTime` _(read-only)_ - Last time when link went down
 * <kbd>DateTime</kbd> `lastLinkUpTime` _(read-only)_ - Last time when link went up
 * <kbd>Number</kbd> `linkDowns` _(read-only)_ - Amount of link downs
-* <kbd>Number</kbd> `txRate` _(read-only)_ - Rate of data transmission in megabits per second
-* <kbd>Number</kbd> `rxRate` _(read-only)_ - Rate of data receiving in megabits per second
+* <kbd>Number:DataTransferRate</kbd> `txRate` _(read-only)_ - Rate of data transmission in megabits per second
+* <kbd>Number:DataTransferRate</kbd> `rxRate` _(read-only)_ - Rate of data receiving in megabits per second
 * <kbd>Number</kbd> `txPacketRate` _(read-only)_ - Rate of data transmission in packets per second
 * <kbd>Number</kbd> `rxPacketRate` _(read-only)_ - Rate of data receiving in packets per second
 * <kbd>Number</kbd> `txBytes` _(read-only)_ - Amount of bytes transmitted
@@ -171,14 +173,15 @@ _items/mikrotik.items_
 
 ```
 Group gRB1 "RB3011 System"
-Number   My_RB_3011_Free_Space     "Free space"     (gRB1) {channel="mikrotik:routeros:rb1:freeSpace"}
-Number   My_RB_3011_Total_Space    "Total space"    (gRB1) {channel="mikrotik:routeros:rb1:totalSpace"}
-Number   My_RB_3011_Used_Space     "Used space %"   (gRB1) {channel="mikrotik:routeros:rb1:usedSpace"}
-Number   My_RB_3011_Free_Memory    "Free ram"       (gRB1) {channel="mikrotik:routeros:rb1:freeMemory"}
-Number   My_RB_3011_Total_Memory   "Total ram"      (gRB1) {channel="mikrotik:routeros:rb1:totalMemory"}
-Number   My_RB_3011_Used_Memory    "Used ram %"     (gRB1) {channel="mikrotik:routeros:rb1:usedMemory"}
-Number   My_RB_3011_Cpu_Load       "Cpu load %"     (gRB1) {channel="mikrotik:routeros:rb1:cpuLoad"}
+Number:DataAmount   My_RB_3011_Free_Space     "Free space"     (gRB1) {channel="mikrotik:routeros:rb1:freeSpace"}
+Number:DataAmount   My_RB_3011_Total_Space    "Total space"    (gRB1) {channel="mikrotik:routeros:rb1:totalSpace"}
+Number:Dimensionless   My_RB_3011_Used_Space     "Used space"   (gRB1) {channel="mikrotik:routeros:rb1:usedSpace"}
+Number:DataAmount   My_RB_3011_Free_Memory    "Free ram"       (gRB1) {channel="mikrotik:routeros:rb1:freeMemory"}
+Number:DataAmount   My_RB_3011_Total_Memory   "Total ram"      (gRB1) {channel="mikrotik:routeros:rb1:totalMemory"}
+Number:Dimensionless   My_RB_3011_Used_Memory    "Used ram"     (gRB1) {channel="mikrotik:routeros:rb1:usedMemory"}
+Number:Dimensionless   My_RB_3011_Cpu_Load       "Cpu load"     (gRB1) {channel="mikrotik:routeros:rb1:cpuLoad"}
 String   My_RB_3011_Uptime         "Uptime"         (gRB1) {channel="mikrotik:routeros:rb1:uptime"}
+DateTime   My_RB_3011_Upsince      "Up since [%1$td.%1$tm.%1$ty %1$tH:%1$tM]"         (gRB1) {channel="mikrotik:routeros:rb1:upSince"}
 
 Group gRB1Eth1 "Ethernet Interface 1"
 String     Eth_1_Type                  "Type"                       (gRB1Eth1) {channel="mikrotik:interface:rb1:eth1:type"}
@@ -190,8 +193,8 @@ Switch     Eth_1_Connected             "Connected"                  (gRB1Eth1) {
 DateTime   Eth_1_Last_Link_Down_Time   "Last link down"             (gRB1Eth1) {channel="mikrotik:interface:rb1:eth1:lastLinkDownTime"}
 DateTime   Eth_1_Last_Link_Up_Time     "Last link up"               (gRB1Eth1) {channel="mikrotik:interface:rb1:eth1:lastLinkUpTime"}
 Number     Eth_1_Link_Downs            "Link downs"                 (gRB1Eth1) {channel="mikrotik:interface:rb1:eth1:linkDowns"}
-Number     Eth_1_Tx_Rate               "Transmission rate [%.2f Mbps]"          (gRB1Eth1) {channel="mikrotik:interface:rb1:eth1:txRate"}
-Number     Eth_1_Rx_Rate               "Receiving rate [%.2f Mbps]"             (gRB1Eth1) {channel="mikrotik:interface:rb1:eth1:rxRate"}
+Number:DataTransferRate     Eth_1_Tx_Rate               "Transmission rate"          (gRB1Eth1) {channel="mikrotik:interface:rb1:eth1:txRate"}
+Number:DataTransferRate     Eth_1_Rx_Rate               "Receiving rate"             (gRB1Eth1) {channel="mikrotik:interface:rb1:eth1:rxRate"}
 Number     Eth_1_Tx_Packet_Rate        "Transmission packet rate"   (gRB1Eth1) {channel="mikrotik:interface:rb1:eth1:txPacketRate"}
 Number     Eth_1_Rx_Packet_Rate        "Receiving packet rate"      (gRB1Eth1) {channel="mikrotik:interface:rb1:eth1:rxPacketRate"}
 Number     Eth_1_Tx_Bytes              "Transmitted bytes"          (gRB1Eth1) {channel="mikrotik:interface:rb1:eth1:txBytes"}
@@ -203,7 +206,7 @@ Number     Eth_1_Rx_Drops              "Receiving drops"            (gRB1Eth1) {
 Number     Eth_1_Tx_Errors             "Transmission errors"        (gRB1Eth1) {channel="mikrotik:interface:rb1:eth1:txErrors"}
 Number     Eth_1_Rx_Errors             "Receiving errors"           (gRB1Eth1) {channel="mikrotik:interface:rb1:eth1:rxErrors"}
 String     Eth_1_Default_Name          "Default name"               (gRB1Eth1) {channel="mikrotik:interface:rb1:eth1:defaultName"}
-String     Eth_1_Rate                  "Link rate"                  (gRB1Eth1) {channel="mikrotik:interface:rb1:eth1:rate [%.2f Mbps]"}
+String     Eth_1_Rate                  "Link rate"                  (gRB1Eth1) {channel="mikrotik:interface:rb1:eth1:rate"}
 String     Eth_1_Auto_Negotiation      "Auto negotiation"           (gRB1Eth1) {channel="mikrotik:interface:rb1:eth1:autoNegotiation"}
 String     Eth_1_State                 "State"                      (gRB1Eth1) {channel="mikrotik:interface:rb1:eth1:state"}
 
@@ -217,8 +220,8 @@ Switch     Eth_2_Connected             "Connected"                  (gRB1Eth2) {
 DateTime   Eth_2_Last_Link_Down_Time   "Last link down"             (gRB1Eth2) {channel="mikrotik:interface:rb1:eth2:lastLinkDownTime"}
 DateTime   Eth_2_Last_Link_Up_Time     "Last link up"               (gRB1Eth2) {channel="mikrotik:interface:rb1:eth2:lastLinkUpTime"}
 Number     Eth_2_Link_Downs            "Link downs"                 (gRB1Eth2) {channel="mikrotik:interface:rb1:eth2:linkDowns"}
-Number     Eth_2_Tx_Rate               "Transmission rate [%.2f Mbps]"          (gRB1Eth2) {channel="mikrotik:interface:rb1:eth2:txRate"}
-Number     Eth_2_Rx_Rate               "Receiving rate [%.2f Mbps]"             (gRB1Eth2) {channel="mikrotik:interface:rb1:eth2:rxRate"}
+Number:DataTransferRate     Eth_2_Tx_Rate               "Transmission rate"          (gRB1Eth2) {channel="mikrotik:interface:rb1:eth2:txRate"}
+Number:DataTransferRate     Eth_2_Rx_Rate               "Receiving rate"             (gRB1Eth2) {channel="mikrotik:interface:rb1:eth2:rxRate"}
 Number     Eth_2_Tx_Packet_Rate        "Transmission packet rate"   (gRB1Eth2) {channel="mikrotik:interface:rb1:eth2:txPacketRate"}
 Number     Eth_2_Rx_Packet_Rate        "Receiving packet rate"      (gRB1Eth2) {channel="mikrotik:interface:rb1:eth2:rxPacketRate"}
 Number     Eth_2_Tx_Bytes              "Transmitted bytes"          (gRB1Eth2) {channel="mikrotik:interface:rb1:eth2:txBytes"}
@@ -230,7 +233,7 @@ Number     Eth_2_Rx_Drops              "Receiving drops"            (gRB1Eth2) {
 Number     Eth_2_Tx_Errors             "Transmission errors"        (gRB1Eth2) {channel="mikrotik:interface:rb1:eth2:txErrors"}
 Number     Eth_2_Rx_Errors             "Receiving errors"           (gRB1Eth2) {channel="mikrotik:interface:rb1:eth2:rxErrors"}
 String     Eth_2_Default_Name          "Default name"               (gRB1Eth2) {channel="mikrotik:interface:rb1:eth2:defaultName"}
-String     Eth_2_Rate                  "Link rate"                  (gRB1Eth2) {channel="mikrotik:interface:rb1:eth2:rate [%.2f Mbps]"}
+String     Eth_2_Rate                  "Link rate"                  (gRB1Eth2) {channel="mikrotik:interface:rb1:eth2:rate"}
 String     Eth_2_Auto_Negotiation      "Auto negotiation"           (gRB1Eth2) {channel="mikrotik:interface:rb1:eth2:autoNegotiation"}
 String     Eth_2_State                 "State"                      (gRB1Eth2) {channel="mikrotik:interface:rb1:eth2:state"}
 
@@ -244,8 +247,8 @@ Switch     Cap_1_Connected             "Connected"                  (gRB1Cap1) {
 DateTime   Cap_1_Last_Link_Down_Time   "Last link down"             (gRB1Cap1) {channel="mikrotik:interface:rb1:cap1:lastLinkDownTime"}
 DateTime   Cap_1_Last_Link_Up_Time     "Last link up"               (gRB1Cap1) {channel="mikrotik:interface:rb1:cap1:lastLinkUpTime"}
 Number     Cap_1_Link_Downs            "Link downs"                 (gRB1Cap1) {channel="mikrotik:interface:rb1:cap1:linkDowns"}
-Number     Cap_1_Tx_Rate               "Transmission rate [%.2f Mbps]"          (gRB1Cap1) {channel="mikrotik:interface:rb1:cap1:txRate"}
-Number     Cap_1_Rx_Rate               "Receiving rate [%.2f Mbps]"             (gRB1Cap1) {channel="mikrotik:interface:rb1:cap1:rxRate"}
+Number:DataTransferRate     Cap_1_Tx_Rate               "Transmission rate"          (gRB1Cap1) {channel="mikrotik:interface:rb1:cap1:txRate"}
+Number:DataTransferRate     Cap_1_Rx_Rate               "Receiving rate"             (gRB1Cap1) {channel="mikrotik:interface:rb1:cap1:rxRate"}
 Number     Cap_1_Tx_Packet_Rate        "Transmission packet rate"   (gRB1Cap1) {channel="mikrotik:interface:rb1:cap1:txPacketRate"}
 Number     Cap_1_Rx_Packet_Rate        "Receiving packet rate"      (gRB1Cap1) {channel="mikrotik:interface:rb1:cap1:rxPacketRate"}
 Number     Cap_1_Tx_Bytes              "Transmitted bytes"          (gRB1Cap1) {channel="mikrotik:interface:rb1:cap1:txBytes"}
@@ -272,8 +275,8 @@ Switch     PP_Po_E_1_Connected             "Connected"                  (gRB1Ppp
 DateTime   PP_Po_E_1_Last_Link_Down_Time   "Last link down"             (gRB1Ppp1) {channel="mikrotik:interface:rb1:ppp1:lastLinkDownTime"}
 DateTime   PP_Po_E_1_Last_Link_Up_Time     "Last link up"               (gRB1Ppp1) {channel="mikrotik:interface:rb1:ppp1:lastLinkUpTime"}
 Number     PP_Po_E_1_Link_Downs            "Link downs"                 (gRB1Ppp1) {channel="mikrotik:interface:rb1:ppp1:linkDowns"}
-Number     PP_Po_E_1_Tx_Rate               "Transmission rate [%.2f Mbps]"          (gRB1Ppp1) {channel="mikrotik:interface:rb1:ppp1:txRate"}
-Number     PP_Po_E_1_Rx_Rate               "Receiving rate [%.2f Mbps]"             (gRB1Ppp1) {channel="mikrotik:interface:rb1:ppp1:rxRate"}
+Number:DataTransferRate     PP_Po_E_1_Tx_Rate               "Transmission rate"          (gRB1Ppp1) {channel="mikrotik:interface:rb1:ppp1:txRate"}
+Number:DataTransferRate     PP_Po_E_1_Rx_Rate               "Receiving rate"             (gRB1Ppp1) {channel="mikrotik:interface:rb1:ppp1:rxRate"}
 Number     PP_Po_E_1_Tx_Packet_Rate        "Transmission packet rate"   (gRB1Ppp1) {channel="mikrotik:interface:rb1:ppp1:txPacketRate"}
 Number     PP_Po_E_1_Rx_Packet_Rate        "Receiving packet rate"      (gRB1Ppp1) {channel="mikrotik:interface:rb1:ppp1:rxPacketRate"}
 Number     PP_Po_E_1_Tx_Bytes              "Transmitted bytes"          (gRB1Ppp1) {channel="mikrotik:interface:rb1:ppp1:txBytes"}
@@ -298,8 +301,8 @@ Switch     L_2_TP_Srv_1_Connected             "Connected"                  (gRB1
 DateTime   L_2_TP_Srv_1_Last_Link_Down_Time   "Last link down"             (gRB1Tun1) {channel="mikrotik:interface:rb1:tun1:lastLinkDownTime"}
 DateTime   L_2_TP_Srv_1_Last_Link_Up_Time     "Last link up"               (gRB1Tun1) {channel="mikrotik:interface:rb1:tun1:lastLinkUpTime"}
 Number     L_2_TP_Srv_1_Link_Downs            "Link downs"                 (gRB1Tun1) {channel="mikrotik:interface:rb1:tun1:linkDowns"}
-Number     L_2_TP_Srv_1_Tx_Rate               "Transmission rate [%.2f Mbps]"          (gRB1Tun1) {channel="mikrotik:interface:rb1:tun1:txRate"}
-Number     L_2_TP_Srv_1_Rx_Rate               "Receiving rate [%.2f Mbps]"             (gRB1Tun1) {channel="mikrotik:interface:rb1:tun1:rxRate"}
+Number:DataTransferRate     L_2_TP_Srv_1_Tx_Rate               "Transmission rate"          (gRB1Tun1) {channel="mikrotik:interface:rb1:tun1:txRate"}
+Number:DataTransferRate     L_2_TP_Srv_1_Rx_Rate               "Receiving rate"             (gRB1Tun1) {channel="mikrotik:interface:rb1:tun1:rxRate"}
 Number     L_2_TP_Srv_1_Tx_Packet_Rate        "Transmission packet rate"   (gRB1Tun1) {channel="mikrotik:interface:rb1:tun1:txPacketRate"}
 Number     L_2_TP_Srv_1_Rx_Packet_Rate        "Receiving packet rate"      (gRB1Tun1) {channel="mikrotik:interface:rb1:tun1:rxPacketRate"}
 Number     L_2_TP_Srv_1_Tx_Bytes              "Transmitted bytes"          (gRB1Tun1) {channel="mikrotik:interface:rb1:tun1:txBytes"}
@@ -322,8 +325,8 @@ Number     Phone_1_Signal           "Received signal strength indicator"   (gRB1
 String     Phone_1_Uptime           "Uptime"                               (gRB1Wifi1) {channel="mikrotik:wifiRegistration:rb1:wifi1:uptime"}
 DateTime   Phone_1_Up_Since         "Up since"                             (gRB1Wifi1) {channel="mikrotik:wifiRegistration:rb1:wifi1:upSince"}
 DateTime   Phone_1_Last_Seen        "Last seen"                            (gRB1Wifi1) {channel="mikrotik:wifiRegistration:rb1:wifi1:lastSeen"}
-Number     Phone_1_Tx_Rate          "Transmission rate [%.2f Mbps]"                    (gRB1Wifi1) {channel="mikrotik:wifiRegistration:rb1:wifi1:txRate"}
-Number     Phone_1_Rx_Rate          "Receiving rate [%.2f Mbps]"                       (gRB1Wifi1) {channel="mikrotik:wifiRegistration:rb1:wifi1:rxRate"}
+Number:DataTransferRate     Phone_1_Tx_Rate          "Transmission rate"                    (gRB1Wifi1) {channel="mikrotik:wifiRegistration:rb1:wifi1:txRate"}
+Number:DataTransferRate     Phone_1_Rx_Rate          "Receiving rate"                       (gRB1Wifi1) {channel="mikrotik:wifiRegistration:rb1:wifi1:rxRate"}
 Number     Phone_1_Tx_Packet_Rate   "Transmission packet rate"             (gRB1Wifi1) {channel="mikrotik:wifiRegistration:rb1:wifi1:txPacketRate"}
 Number     Phone_1_Rx_Packet_Rate   "Receiving packet rate"                (gRB1Wifi1) {channel="mikrotik:wifiRegistration:rb1:wifi1:rxPacketRate"}
 Number     Phone_1_Tx_Bytes         "Transmitted bytes"                    (gRB1Wifi1) {channel="mikrotik:wifiRegistration:rb1:wifi1:txBytes"}
@@ -342,8 +345,8 @@ Number     Tablet_2_Signal           "Received signal strength indicator"   (gRB
 String     Tablet_2_Uptime           "Uptime"                               (gRB1Wifi2) {channel="mikrotik:wifiRegistration:rb1:wifi2:uptime"}
 DateTime   Tablet_2_Up_Since         "Up since"                             (gRB1Wifi2) {channel="mikrotik:wifiRegistration:rb1:wifi2:upSince"}
 DateTime   Tablet_2_Last_Seen        "Last seen"                            (gRB1Wifi2) {channel="mikrotik:wifiRegistration:rb1:wifi2:lastSeen"}
-Number     Tablet_2_Tx_Rate          "Transmission rate [%.2f Mbps]"                    (gRB1Wifi2) {channel="mikrotik:wifiRegistration:rb1:wifi2:txRate"}
-Number     Tablet_2_Rx_Rate          "Receiving rate [%.2f Mbps]"                       (gRB1Wifi2) {channel="mikrotik:wifiRegistration:rb1:wifi2:rxRate"}
+Number:DataTransferRate    Tablet_2_Tx_Rate          "Transmission rate"                    (gRB1Wifi2) {channel="mikrotik:wifiRegistration:rb1:wifi2:txRate"}
+Number:DataTransferRate     Tablet_2_Rx_Rate          "Receiving rate"                       (gRB1Wifi2) {channel="mikrotik:wifiRegistration:rb1:wifi2:rxRate"}
 Number     Tablet_2_Tx_Packet_Rate   "Transmission packet rate"             (gRB1Wifi2) {channel="mikrotik:wifiRegistration:rb1:wifi2:txPacketRate"}
 Number     Tablet_2_Rx_Packet_Rate   "Receiving packet rate"                (gRB1Wifi2) {channel="mikrotik:wifiRegistration:rb1:wifi2:rxPacketRate"}
 Number     Tablet_2_Tx_Bytes         "Transmitted bytes"                    (gRB1Wifi2) {channel="mikrotik:wifiRegistration:rb1:wifi2:txBytes"}
