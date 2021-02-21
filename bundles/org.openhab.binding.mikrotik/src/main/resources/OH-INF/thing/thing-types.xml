@@ -303,17 +303,17 @@
 	</channel-type>
 
 	<channel-type id="txBytes" advanced="true">
-		<item-type>Number</item-type>
+		<item-type>Number:DataAmount</item-type>
 		<label>Transmitted Bytes</label>
 		<description>Amount of bytes transmitted</description>
-		<state readOnly="true"/>
+		<state readOnly="true" pattern="%d B"/>
 	</channel-type>
 
 	<channel-type id="rxBytes" advanced="true">
-		<item-type>Number</item-type>
+		<item-type>Number:DataAmount</item-type>
 		<label>Received Bytes</label>
 		<description>Amount of bytes received</description>
-		<state readOnly="true"/>
+		<state readOnly="true" pattern="%d B"/>
 	</channel-type>
 
 	<channel-type id="txPackets" advanced="true">
