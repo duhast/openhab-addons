@@ -23,15 +23,15 @@ The binding has no configuration options, all configuration is done at the Bridg
 ## Bridge Configuration
 
 To use this binding you need at least one RouterOS-powered device (Bridge) accessible to the host running
-OpenHAB via network.
-Make sure your RouterOS have API enabled by visiting [<kbd>IP -> Services</kbd>](https://wiki.mikrotik.com/wiki/Manual:IP/Services) 
+openHAB via network.
+Make sure your RouterOS has the API enabled by visiting [<kbd>IP -> Services</kbd>](https://wiki.mikrotik.com/wiki/Manual:IP/Services) 
 configuration section in 
-[WinBox](https://wiki.mikrotik.com/wiki/Manual:Winbox). Note the API port number as you'll need it below.
+[WinBox](https://wiki.mikrotik.com/wiki/Manual:Winbox).
+Take note of the API port number as you'll need it below.
 [SSL API connection](https://wiki.mikrotik.com/wiki/Manual:API-SSL) is not yet supported by this binding.
-To connect to RouterOS API you need to provide user credantials to the bridge config. You may use your current 
-credentials you use to manage device, but it is highly recommended to **create a read-only RouterOS user** since
-this binding only reads data from the device. To do so, proceed to <kbd>System -> Users</kbd> configuration section
-and add a user to the `read` group.
+To connect to the RouterOS API, you will need to provide user credentials for the bridge thing. 
+You may use your current credentials that you use to manage your devices, but it is highly recommended to **create a read-only RouterOS user** since this binding only need to read data from the device.
+To do this, proceed to <kbd>System -> Users</kbd> configuration section and add a user to the `read` group.
 
 > Thing type: `routeros`
 
@@ -43,7 +43,7 @@ The RouterOS Bridge configuration parameters are:
 * `password` _(required text)_ - The user password to access the RouterOS device
 * `refresh` _(optional integer)_ [Default: `10`] - The refresh interval in seconds to poll the RouterOS device
 
-**All things provided by this binding requires a working bridge to be set up.**
+**All things provided by this binding require a working bridge to be set up.**
 
 
 ### Bridge Channels
