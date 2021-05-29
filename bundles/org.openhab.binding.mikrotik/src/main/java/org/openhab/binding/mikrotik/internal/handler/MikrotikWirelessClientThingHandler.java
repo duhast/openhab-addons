@@ -68,13 +68,13 @@ public class MikrotikWirelessClientThingHandler extends MikrotikBaseThingHandler
 
     private boolean fetchModels() {
         logger.trace("Searching for {} registration", config.mac);
-        this.wifiReg = getRouteros().findWirelessRegistration(config.mac);
+        this.wifiReg = getRouterOs().findWirelessRegistration(config.mac);
         if (!config.ssid.isBlank() && !config.ssid.equalsIgnoreCase(wifiReg.getSSID())) {
             this.wifiReg = null;
         }
 
         if (this.wifiReg == null) { // try looking in capsman when there is no wirelessRegistration
-            this.wifiReg = getRouteros().findCapsmanRegistration(config.mac);
+            this.wifiReg = getRouterOs().findCapsmanRegistration(config.mac);
             if (wifiReg != null && !config.ssid.isBlank() && !config.ssid.equalsIgnoreCase(wifiReg.getSSID())) {
                 this.wifiReg = null;
             }

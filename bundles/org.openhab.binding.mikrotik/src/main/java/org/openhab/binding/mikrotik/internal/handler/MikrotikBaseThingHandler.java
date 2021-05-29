@@ -17,7 +17,7 @@ import static org.openhab.core.thing.ThingStatusDetail.CONFIGURATION_ERROR;
 import static org.openhab.core.types.RefreshType.REFRESH;
 
 import java.lang.reflect.ParameterizedType;
-import java.time.LocalDateTime;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
@@ -27,6 +27,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.mikrotik.internal.config.ConfigValidation;
 import org.openhab.binding.mikrotik.internal.model.RouterosDevice;
+import org.openhab.core.cache.ExpiringCache;
 import org.openhab.core.thing.*;
 import org.openhab.core.thing.binding.BaseThingHandler;
 import org.openhab.core.thing.binding.builder.ThingStatusInfoBuilder;
@@ -51,7 +52,7 @@ public abstract class MikrotikBaseThingHandler<C extends ConfigValidation> exten
     private final Logger logger = LoggerFactory.getLogger(MikrotikBaseThingHandler.class);
     protected @Nullable C config;
     private @Nullable ScheduledFuture<?> refreshJob;
-    protected LocalDateTime lastModelsRefresh = LocalDateTime.now();
+    protected ExpiringCache<Boolean> refreshCache = new ExpiringCache<>(Duration.ofDays(1), () -> false);;
     protected Map<String, State> currentState = new HashMap<>();
 
     // public static boolean supportsThingType(ThingTypeUID thingTypeUID) <- in subclasses
@@ -61,7 +62,6 @@ public abstract class MikrotikBaseThingHandler<C extends ConfigValidation> exten
     }
 
     protected @Nullable MikrotikRouterosBridgeHandler getVerifiedBridgeHandler() {
-        @Nullable
         Bridge bridgeRef = getBridge();
         if (bridgeRef != null && bridgeRef.getHandler() != null
                 && (bridgeRef.getHandler() instanceof MikrotikRouterosBridgeHandler)) {
@@ -70,8 +70,7 @@ public abstract class MikrotikBaseThingHandler<C extends ConfigValidation> exten
         return null;
     }
 
-    protected final @Nullable RouterosDevice getRouteros() {
-        @Nullable
+    protected final @Nullable RouterosDevice getRouterOs() {
         MikrotikRouterosBridgeHandler bridgeHandler = getVerifiedBridgeHandler();
         return bridgeHandler == null ? null : bridgeHandler.getRouteros();
     }
@@ -80,15 +79,15 @@ public abstract class MikrotikBaseThingHandler<C extends ConfigValidation> exten
     public void handleCommand(ChannelUID channelUID, Command command) {
         logger.debug("Handling command = {} for channel = {}", command, channelUID);
         if (getThing().getStatus() == ONLINE) {
-            RouterosDevice routeros = getRouteros();
+            RouterosDevice routeros = getRouterOs();
             if (routeros != null) {
                 if (command == REFRESH) {
-                    throttledRefreshModels();
+                    refreshCache.getValue();
                     refreshChannel(channelUID);
                 } else {
                     try {
                         executeCommand(channelUID, command);
-                    } catch (Exception e) {
+                    } catch (RuntimeException e) {
                         logger.warn("Unexpected error handling command = {} for channel = {} : {}", command, channelUID,
                                 e.getMessage());
                     }
@@ -99,7 +98,6 @@ public abstract class MikrotikBaseThingHandler<C extends ConfigValidation> exten
 
     @Override
     public void initialize() {
-        logger.debug("Start initializing {}!", getThing().getUID());
         cancelRefreshJob();
         if (getVerifiedBridgeHandler() == null) {
             updateStatus(OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "This thing requires a RouterOS bridge");
@@ -108,7 +106,13 @@ public abstract class MikrotikBaseThingHandler<C extends ConfigValidation> exten
 
         Class<?> klass = (Class<?>) (((ParameterizedType) getClass().getGenericSuperclass())
                 .getActualTypeArguments()[0]);
-        this.config = (C) getConfigAs(klass);
+
+        C localConfig = (C) getConfigAs(klass);
+        if (localConfig == null) {
+            updateStatus(OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "Cannot obtain thing configuration");
+            return;
+        }
+        this.config = localConfig;
         logger.trace("Config for for {} ({}) is {}", getThing().getUID(), getThing().getStatus(), config);
 
         if (!config.isValid()) {
@@ -117,7 +121,6 @@ public abstract class MikrotikBaseThingHandler<C extends ConfigValidation> exten
         }
 
         updateStatus(ONLINE);
-        logger.debug("Finished initializing {}!", getThing().getUID());
     }
 
     @Override
@@ -141,10 +144,18 @@ public abstract class MikrotikBaseThingHandler<C extends ConfigValidation> exten
     private void scheduleRefreshJob() {
         synchronized (this) {
             if (refreshJob == null) {
-                int refreshPeriod = getVerifiedBridgeHandler().getBridgeConfig().refresh;
-                logger.debug("Scheduling refresh job every {}s", refreshPeriod);
-                refreshJob = scheduler.scheduleWithFixedDelay(this::scheduledRun, refreshPeriod, refreshPeriod,
-                        TimeUnit.SECONDS);
+                MikrotikRouterosBridgeHandler bridgeHandler = getVerifiedBridgeHandler();
+                if (bridgeHandler != null) {
+                    int refreshPeriod = bridgeHandler.getBridgeConfig().refresh;
+                    logger.debug("Scheduling refresh job every {}s", refreshPeriod);
+
+                    this.refreshCache = new ExpiringCache<>(Duration.ofSeconds(refreshPeriod),
+                            this::verifiedRefreshModels);
+                    refreshJob = scheduler.scheduleWithFixedDelay(this::scheduledRun, refreshPeriod, refreshPeriod,
+                            TimeUnit.SECONDS);
+                } else {
+                    logger.error("Cannot schedule refresh job since getVerifiedBridgeHandler() is null");
+                }
             }
         }
     }
@@ -155,38 +166,40 @@ public abstract class MikrotikBaseThingHandler<C extends ConfigValidation> exten
                 logger.debug("Cancelling refresh job");
                 refreshJob.cancel(true);
                 refreshJob = null;
+                // Not setting to null as getValue() can potentially be called after
+                this.refreshCache = new ExpiringCache<>(Duration.ofDays(1), () -> false);
             }
         }
     }
 
     private void scheduledRun() {
         logger.trace("scheduledRun() called for {}", getThing().getUID());
-        try {
-            if (getVerifiedBridgeHandler() == null) {
-                updateStatus(OFFLINE, ThingStatusDetail.BRIDGE_OFFLINE, "Failed reaching out to RouterOS bridge");
-                return;
-            }
-            if (getBridge() != null && getBridge().getStatus() == OFFLINE) {
-                updateStatus(OFFLINE, ThingStatusDetail.BRIDGE_OFFLINE, "The RouterOS bridge is currently offline");
-                return;
-            }
+        if (getVerifiedBridgeHandler() == null) {
+            updateStatus(OFFLINE, ThingStatusDetail.BRIDGE_OFFLINE, "Failed reaching out to RouterOS bridge");
+            return;
+        }
+        if (getBridge() != null && getBridge().getStatus() == OFFLINE) {
+            updateStatus(OFFLINE, ThingStatusDetail.BRIDGE_OFFLINE, "The RouterOS bridge is currently offline");
+            return;
+        }
 
-            if (getThing().getStatus() != ONLINE)
-                updateStatus(ONLINE);
-            logger.debug("Refreshing all {} channels", getThing().getUID());
-            for (Channel channel : getThing().getChannels()) {
+        if (getThing().getStatus() != ONLINE)
+            updateStatus(ONLINE);
+        logger.debug("Refreshing all {} channels", getThing().getUID());
+        for (Channel channel : getThing().getChannels()) {
+            try {
                 refreshChannel(channel.getUID());
+            } catch (RuntimeException e) {
+                logger.warn("Unhandled exception while refreshing the {} Mikrotik thing", getThing().getUID(), e);
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
             }
-        } catch (Exception e) {
-            logger.warn("Unhandled exception while refreshing the {} Mikrotik thing", getThing().getUID(), e);
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
         }
     }
 
     protected final void refresh() throws ChannelUpdateException {
         if (getThing().getStatus() == ONLINE) {
-            if (getRouteros() != null) {
-                throttledRefreshModels();
+            if (getRouterOs() != null) {
+                refreshCache.getValue();
                 for (Channel channel : getThing().getChannels()) {
                     ChannelUID channelUID = channel.getUID();
                     try {
@@ -199,22 +212,18 @@ public abstract class MikrotikBaseThingHandler<C extends ConfigValidation> exten
         }
     }
 
-    protected void throttledRefreshModels() {
-        MikrotikRouterosBridgeHandler bridgeHandler = (MikrotikRouterosBridgeHandler) getBridge().getHandler();
-        if (LocalDateTime.now().isAfter(lastModelsRefresh.plusSeconds(bridgeHandler.getBridgeConfig().refresh))) {
-            lastModelsRefresh = LocalDateTime.now();
-            if (getRouteros() != null && config != null) {
-                refreshModels();
-            } else {
-                logger.trace("getRouteros() || config is null, skipping {}.refreshModels()",
-                        getClass().getSimpleName());
-            }
+    protected boolean verifiedRefreshModels() {
+        if (getRouterOs() != null && config != null) {
+            refreshModels();
+            return true;
+        } else {
+            logger.trace("getRouteros() || config is null, skipping {}.refreshModels()", getClass().getSimpleName());
+            return false;
         }
     }
 
     @Override
     public void dispose() {
-        logger.debug("Disposing Mikrotik Thing {}", getThing().getUID());
         cancelRefreshJob();
     }
 

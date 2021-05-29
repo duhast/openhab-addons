@@ -72,12 +72,11 @@ public class MikrotikRouterosBridgeHandler extends BaseBridgeHandler {
         logger.debug("Initializing MikrotikRouterosBridgeHandler with config = {}", config);
         if (config.isValid()) {
             routeros = new RouterosDevice(config.host, config.port, config.login, config.password);
-            updateStatus(ThingStatus.UNKNOWN, ThingStatusDetail.NONE, String.format("Connecting to %s", config.host));
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.NONE, String.format("Connecting to %s", config.host));
             scheduleRefreshJob();
         } else {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "Configuration is not valid");
         }
-        logger.debug("Finished initializing Mikrotik binding!");
     }
 
     public @Nullable RouterosDevice getRouteros() {
@@ -107,7 +106,6 @@ public class MikrotikRouterosBridgeHandler extends BaseBridgeHandler {
 
     @Override
     public void dispose() {
-        logger.debug("Disposing RouterOS bridge");
         cancelRefreshJob();
         if (routeros != null) {
             routeros.stop();

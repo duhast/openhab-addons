@@ -31,14 +31,12 @@ public class RateCalculator {
     public static final int BYTES_IN_MEGABIT = 125000;
 
     private BigDecimal value;
-    // BigDecimal rate;
     float rate;
     LocalDateTime lastUpdated;
 
     public RateCalculator(BigDecimal initialValue) {
         this.value = initialValue;
         this.lastUpdated = LocalDateTime.now();
-        // this.rate = new BigDecimal(0);
         this.rate = 0.0F;
     }
 
@@ -55,7 +53,6 @@ public class RateCalculator {
             synchronized (this) {
                 LocalDateTime thisUpdated = LocalDateTime.now();
                 Seconds secDiff = Seconds.between(lastUpdated, thisUpdated);
-                // this.rate = currentValue.subtract(value).divide(secDiff.getSeconds());
                 this.rate = currentValue.subtract(value).floatValue() / secDiff.getAmount();
                 this.value = currentValue;
                 this.lastUpdated = thisUpdated;

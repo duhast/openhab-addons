@@ -117,7 +117,7 @@
 			<channel id="continuous" typeId="continuous"/>
 			<channel id="ssid" typeId="ssid"/>
 			<channel id="interface" typeId="interfaceName"/>
-			<channel id="signal" typeId="signal"/>
+			<channel id="signal" typeId="system.signal-strength"/>
 			<channel id="uptime" typeId="uptime"/>
 			<channel id="upSince" typeId="upSince"/>
 			<channel id="lastSeen" typeId="lastSeen"/>
@@ -418,13 +418,6 @@
 		<item-type>String</item-type>
 		<label>WiFi Network</label>
 		<description>Wireless Network (SSID) the wireless client is connected to</description>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="signal">
-		<item-type>Number</item-type>
-		<label>Signal Strength</label>
-		<description>Received Signal Strength Indicator (RSSI) of the wireless client</description>
 		<state readOnly="true"/>
 	</channel-type>
 

@@ -13,7 +13,8 @@
 package org.openhab.binding.mikrotik.internal.handler;
 
 import static org.openhab.binding.mikrotik.internal.MikrotikBindingConstants.*;
-import static org.openhab.core.thing.ThingStatus.*;
+import static org.openhab.core.thing.ThingStatus.OFFLINE;
+import static org.openhab.core.thing.ThingStatus.ONLINE;
 import static org.openhab.core.thing.ThingStatusDetail.GONE;
 
 import java.math.BigDecimal;
@@ -60,12 +61,12 @@ public class MikrotikInterfaceThingHandler extends MikrotikBaseThingHandler<Inte
 
     @Override
     protected void updateStatus(ThingStatus status, ThingStatusDetail statusDetail, @Nullable String description) {
-        if (getRouteros() != null) {
+        if (getRouterOs() != null) {
             if (status == ONLINE || (status == OFFLINE && statusDetail == ThingStatusDetail.COMMUNICATION_ERROR)) {
-                getRouteros().registerForMonitoring(config.name);
-            } else if (status == OFFLINE && (statusDetail == ThingStatusDetail.CONFIGURATION_ERROR
-                    || statusDetail == ThingStatusDetail.GONE)) {
-                getRouteros().unregisterForMonitoring(config.name);
+                getRouterOs().registerForMonitoring(config.name);
+            } else if (status == OFFLINE
+                    && (statusDetail == ThingStatusDetail.CONFIGURATION_ERROR || statusDetail == GONE)) {
+                getRouterOs().unregisterForMonitoring(config.name);
             }
         }
         super.updateStatus(status, statusDetail, description);
@@ -74,10 +75,11 @@ public class MikrotikInterfaceThingHandler extends MikrotikBaseThingHandler<Inte
     @Override
     protected void refreshModels() {
         logger.trace("Searching for {} interface", config.name);
-        iface = getRouteros().findInterface(config.name);
+        iface = getRouterOs().findInterface(config.name);
         if (iface == null) {
-            logger.warn("Interface {} is not found in RouterOS for thing {}", config.name, getThing().getUID());
-            updateStatus(OFFLINE, GONE, "Interface not found in RouterOS");
+            String statusMsg = String.format("Interface %s is not found in RouterOS for thing %s", config.name,
+                    getThing().getUID());
+            updateStatus(OFFLINE, GONE, statusMsg);
         } else {
             txByteRate.update(iface.getTxBytes());
             rxByteRate.update(iface.getRxBytes());
@@ -249,8 +251,6 @@ public class MikrotikInterfaceThingHandler extends MikrotikBaseThingHandler<Inte
         switch (channelID) {
             case CHANNEL_STATE:
                 return StateUtil.stringOrNull(vpnSrv.getEncoding());
-            // case CHANNEL_REGISTERED_CLIENTS:
-            // return StateUtil.stringOrNull(vpnSrv.getClientAddress());
             case CHANNEL_UP_TIME:
                 return StateUtil.stringOrNull(vpnSrv.getUptime());
             case CHANNEL_UP_SINCE:

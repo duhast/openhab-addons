@@ -15,11 +15,6 @@ This binding integrates [Mikrotik](https://mikrotik.com/) [RouterOS](https://hel
 Discovery is currently not supported, but may be implemented in future versions.
 
 
-## Binding Configuration
-
-The binding has no configuration options, all configuration is done at the Bridge and Thing levels.
-
-
 ## Bridge Configuration
 
 To use this binding you need at least one RouterOS-powered device (Bridge) accessible to the host running
