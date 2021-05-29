@@ -41,8 +41,9 @@ public class RouterosSystemResources extends RouterosBaseData {
     }
 
     public @Nullable Integer getSpaceUse() {
-        if (getFreeSpace() == null || getTotalSpace() == null)
+        if (getFreeSpace() == null || getTotalSpace() == null) {
             return null;
+        }
         return 100 - Math.round(100F * getFreeSpace() / getTotalSpace());
     }
 
@@ -55,8 +56,9 @@ public class RouterosSystemResources extends RouterosBaseData {
     }
 
     public @Nullable Integer getMemUse() {
-        if (getFreeMem() == null || getTotalMem() == null)
+        if (getFreeMem() == null || getTotalMem() == null) {
             return null;
+        }
         return 100 - Math.round(100F * getFreeMem() / getTotalMem());
     }
 

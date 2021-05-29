@@ -12,7 +12,8 @@
  */
 package org.openhab.binding.mikrotik.internal.handler;
 
-import static org.openhab.core.thing.ThingStatus.*;
+import static org.openhab.core.thing.ThingStatus.OFFLINE;
+import static org.openhab.core.thing.ThingStatus.ONLINE;
 import static org.openhab.core.thing.ThingStatusDetail.CONFIGURATION_ERROR;
 import static org.openhab.core.types.RefreshType.REFRESH;
 
@@ -28,7 +29,13 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.mikrotik.internal.config.ConfigValidation;
 import org.openhab.binding.mikrotik.internal.model.RouterosDevice;
 import org.openhab.core.cache.ExpiringCache;
-import org.openhab.core.thing.*;
+import org.openhab.core.thing.Bridge;
+import org.openhab.core.thing.Channel;
+import org.openhab.core.thing.ChannelUID;
+import org.openhab.core.thing.Thing;
+import org.openhab.core.thing.ThingStatus;
+import org.openhab.core.thing.ThingStatusDetail;
+import org.openhab.core.thing.ThingStatusInfo;
 import org.openhab.core.thing.binding.BaseThingHandler;
 import org.openhab.core.thing.binding.builder.ThingStatusInfoBuilder;
 import org.openhab.core.types.Command;
@@ -52,7 +59,7 @@ public abstract class MikrotikBaseThingHandler<C extends ConfigValidation> exten
     private final Logger logger = LoggerFactory.getLogger(MikrotikBaseThingHandler.class);
     protected @Nullable C config;
     private @Nullable ScheduledFuture<?> refreshJob;
-    protected ExpiringCache<Boolean> refreshCache = new ExpiringCache<>(Duration.ofDays(1), () -> false);;
+    protected ExpiringCache<Boolean> refreshCache = new ExpiringCache<>(Duration.ofDays(1), () -> false);
     protected Map<String, State> currentState = new HashMap<>();
 
     // public static boolean supportsThingType(ThingTypeUID thingTypeUID) <- in subclasses
@@ -183,15 +190,16 @@ public abstract class MikrotikBaseThingHandler<C extends ConfigValidation> exten
             return;
         }
 
-        if (getThing().getStatus() != ONLINE)
+        if (getThing().getStatus() != ONLINE) {
             updateStatus(ONLINE);
+        }
         logger.debug("Refreshing all {} channels", getThing().getUID());
         for (Channel channel : getThing().getChannels()) {
             try {
                 refreshChannel(channel.getUID());
             } catch (RuntimeException e) {
                 logger.warn("Unhandled exception while refreshing the {} Mikrotik thing", getThing().getUID(), e);
-                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
+                updateStatus(OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
             }
         }
     }

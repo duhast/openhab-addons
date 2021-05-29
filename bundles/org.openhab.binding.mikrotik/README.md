@@ -42,6 +42,7 @@ The RouterOS Bridge configuration parameters are:
 
 
 ### Bridge Channels
+
 * <kbd>Number:DataAmount</kbd> `freeSpace` _(read-only)_ - Amount of free storage left on device in bytes
 * <kbd>Number:DataAmount</kbd> `totalSpace` _(read-only)_ - Amount of total storage available on device in bytes
 * <kbd>Number:Dimensionless</kbd> `usedSpace` _(read-only)_ - Percentage of used device storage space
@@ -54,6 +55,7 @@ The RouterOS Bridge configuration parameters are:
 
 
 ## WiFi Client Thing Configuration
+
 > Thing type: `wifiRegistration`
 
 Represents a wireless client connected to a RouterOS wireless network (direct or CAPsMAN-managed).
@@ -61,13 +63,11 @@ Represents a wireless client connected to a RouterOS wireless network (direct or
 The WiFi client thing configuration parameters are:
 
 * `mac` _(required text)_ - WiFi client MAC address
-* `ssid` _(optional text)_ - Constraining SSID for the WiFi client (optional). If client will connect to another SSID, 
-  this thing will stay offline until client reconnects to specified SSID.
-* `considerContinuous` _(optional integer)_ [Default: `180`] - The interval in seconds to treat the client as connected 
-  permanently. For example, when this set to 60, the binding will report a client away as soon 
-  as `lastSeen` + `60` seconds < `now`
+* `ssid` _(optional text)_ - Constraining SSID for the WiFi client (optional). If client will connect to another SSID, this thing will stay offline until client reconnects to specified SSID.
+* `considerContinuous` _(optional integer)_ [Default: `180`] - The interval in seconds to treat the client as connected permanently. For example, when this set to 60, the binding will report a client away as soon as `lastSeen` + `60` seconds < `now`
 
 ### WiFi client Thing Channels
+
 * <kbd>String</kbd> `macAddress` _(read-only)_ - MAC address of the client or interface
 * <kbd>String</kbd> `comment` _(read-only)_ - User-defined comment
 * <kbd>Switch</kbd> `connected` _(read-only)_ - Reflects connected or disconnected state
@@ -89,10 +89,12 @@ The WiFi client thing configuration parameters are:
 
 
 ## Network Interface Thing Configuration
+
 > Thing type: `interface`
 
 Represents a network interface from RouterOS system (ethernet, wifi, vpn, etc.)
 At the moment the binding supports the following RouterOS interface types:
+
 * `ether`
 * `bridge`
 * `wlan`
@@ -104,14 +106,17 @@ At the moment the binding supports the following RouterOS interface types:
 The interface thing configuration parameters are:
 
 ### Interface Thing Configuration
+
 * `name` _(required text)_ - RouterOS Interface name (i.e. ether1)
 
 ### Interface Thing Channels
+
 Please note that different on RouterOS interfaces has different data available depending on the kind of interface.
 While the common dataset is same, some specific information for specific interface type may be missing. This may
 be improved in future binding versions.
 
 Common for all kinds of interfaces:
+
 * <kbd>String</kbd> `type` _(read-only)_ - Network interface type
 * <kbd>String</kbd> `name` _(read-only)_ - Network interface name
 * <kbd>String</kbd> `comment` _(read-only)_ - User-defined comment
@@ -135,11 +140,13 @@ Common for all kinds of interfaces:
 * <kbd>Number</kbd> `rxErrors` _(read-only)_ - Amount of errors during receiving
 
 Populated only for `ether` interfaces:
+
 * <kbd>String</kbd> `defaultName` _(read-only)_ - Interface factory name
 * <kbd>String</kbd> `rate` _(read-only)_ - Ethernet link rate
 * <kbd>String</kbd> `autoNegotiation` _(read-only)_ - Ethernet auto-negotiation status
 
 Populated only for `cap` interfaces:
+
 * <kbd>Number</kbd> `registeredClients` _(read-only)_ - Amount of clients registered to WiFi interface
 * <kbd>Number</kbd> `authorizedClients` _(read-only)_ - Amount of clients authorized by WiFi interface
 * <kbd>String</kbd> `uptime` _(read-only)_ - Duration while thing is up

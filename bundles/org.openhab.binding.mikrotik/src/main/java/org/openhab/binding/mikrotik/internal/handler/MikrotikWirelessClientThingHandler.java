@@ -202,8 +202,9 @@ public class MikrotikWirelessClientThingHandler extends MikrotikBaseThingHandler
 
     @Override
     protected void executeCommand(ChannelUID channelUID, Command command) {
-        if (!online)
+        if (!online) {
             return;
+        }
         logger.warn("Ignoring unsupported command = {} for channel = {}", command, channelUID);
     }
 }

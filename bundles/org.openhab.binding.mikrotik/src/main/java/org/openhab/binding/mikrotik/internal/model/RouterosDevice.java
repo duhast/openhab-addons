@@ -12,7 +12,12 @@
  */
 package org.openhab.binding.mikrotik.internal.model;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.net.SocketFactory;
@@ -73,9 +78,11 @@ public class RouterosDevice {
     private RouterosRouterboardInfo rbInfo;
 
     private static Optional<RouterosInterfaceBase> createTypedInterface(Map<String, String> interfaceProps) {
+        @Nullable
         RouterosInterfaceType ifaceType = RouterosInterfaceType.resolve(interfaceProps.get(PROP_TYPE_KEY));
-        if (ifaceType == null)
+        if (ifaceType == null) {
             return Optional.empty();
+        }
         switch (ifaceType) {
             case ETHERNET:
                 return Optional.of(new RouterosEthernetInterface(interfaceProps));
@@ -206,7 +213,7 @@ public class RouterosDevice {
         Map<String, Map<String, String>> typedIfaceResponse = new HashMap<>();
         for (String ifaceApiType : interfaceTypesToPoll) {
             String cmd = String.format(CMD_PRINT_IFACE_TYPE_TPL, ifaceApiType);
-            if (ifaceApiType.equals("cap")) {
+            if (ifaceApiType.compareTo("cap") == 0) {
                 cmd = CMD_PRINT_CAPS_IFACES;
             }
             logger.trace("Executing '{}' on {}...", cmd, host);

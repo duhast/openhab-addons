@@ -12,7 +12,6 @@
  */
 package org.openhab.binding.mikrotik.internal.handler;
 
-import static org.openhab.binding.mikrotik.internal.MikrotikBindingConstants.*;
 import static org.openhab.core.thing.ThingStatus.OFFLINE;
 import static org.openhab.core.thing.ThingStatus.ONLINE;
 import static org.openhab.core.thing.ThingStatusDetail.GONE;
@@ -23,10 +22,20 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.mikrotik.internal.MikrotikBindingConstants;
 import org.openhab.binding.mikrotik.internal.config.InterfaceThingConfig;
-import org.openhab.binding.mikrotik.internal.model.*;
+import org.openhab.binding.mikrotik.internal.model.RouterosCapInterface;
+import org.openhab.binding.mikrotik.internal.model.RouterosEthernetInterface;
+import org.openhab.binding.mikrotik.internal.model.RouterosInterfaceBase;
+import org.openhab.binding.mikrotik.internal.model.RouterosL2TPCliInterface;
+import org.openhab.binding.mikrotik.internal.model.RouterosL2TPSrvInterface;
+import org.openhab.binding.mikrotik.internal.model.RouterosPPPoECliInterface;
+import org.openhab.binding.mikrotik.internal.model.RouterosWlanInterface;
 import org.openhab.binding.mikrotik.internal.util.RateCalculator;
 import org.openhab.binding.mikrotik.internal.util.StateUtil;
-import org.openhab.core.thing.*;
+import org.openhab.core.thing.ChannelUID;
+import org.openhab.core.thing.Thing;
+import org.openhab.core.thing.ThingStatus;
+import org.openhab.core.thing.ThingStatusDetail;
+import org.openhab.core.thing.ThingTypeUID;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -98,67 +107,67 @@ public class MikrotikInterfaceThingHandler extends MikrotikBaseThingHandler<Inte
             newState = UnDefType.NULL;
         } else {
             switch (channelID) {
-                case CHANNEL_NAME:
+                case MikrotikBindingConstants.CHANNEL_NAME:
                     newState = StateUtil.stringOrNull(iface.getName());
                     break;
-                case CHANNEL_COMMENT:
+                case MikrotikBindingConstants.CHANNEL_COMMENT:
                     newState = StateUtil.stringOrNull(iface.getComment());
                     break;
-                case CHANNEL_TYPE:
+                case MikrotikBindingConstants.CHANNEL_TYPE:
                     newState = StateUtil.stringOrNull(iface.getType());
                     break;
-                case CHANNEL_MAC:
+                case MikrotikBindingConstants.CHANNEL_MAC:
                     newState = StateUtil.stringOrNull(iface.getMacAddress());
                     break;
-                case CHANNEL_ENABLED:
+                case MikrotikBindingConstants.CHANNEL_ENABLED:
                     newState = StateUtil.boolOrNull(iface.isEnabled());
                     break;
-                case CHANNEL_CONNECTED:
+                case MikrotikBindingConstants.CHANNEL_CONNECTED:
                     newState = StateUtil.boolOrNull(iface.isConnected());
                     break;
-                case CHANNEL_LAST_LINK_DOWN_TIME:
+                case MikrotikBindingConstants.CHANNEL_LAST_LINK_DOWN_TIME:
                     newState = StateUtil.timeOrNull(iface.getLastLinkDownTime());
                     break;
-                case CHANNEL_LAST_LINK_UP_TIME:
+                case MikrotikBindingConstants.CHANNEL_LAST_LINK_UP_TIME:
                     newState = StateUtil.timeOrNull(iface.getLastLinkUpTime());
                     break;
-                case CHANNEL_LINK_DOWNS:
+                case MikrotikBindingConstants.CHANNEL_LINK_DOWNS:
                     newState = StateUtil.intOrNull(iface.getLinkDowns());
                     break;
-                case CHANNEL_TX_DATA_RATE:
+                case MikrotikBindingConstants.CHANNEL_TX_DATA_RATE:
                     newState = StateUtil.floatOrNull(txByteRate.getMegabitRate());
                     break;
-                case CHANNEL_RX_DATA_RATE:
+                case MikrotikBindingConstants.CHANNEL_RX_DATA_RATE:
                     newState = StateUtil.floatOrNull(rxByteRate.getMegabitRate());
                     break;
-                case CHANNEL_TX_PACKET_RATE:
+                case MikrotikBindingConstants.CHANNEL_TX_PACKET_RATE:
                     newState = StateUtil.floatOrNull(txPacketRate.getRate());
                     break;
-                case CHANNEL_RX_PACKET_RATE:
+                case MikrotikBindingConstants.CHANNEL_RX_PACKET_RATE:
                     newState = StateUtil.floatOrNull(rxPacketRate.getRate());
                     break;
-                case CHANNEL_TX_BYTES:
+                case MikrotikBindingConstants.CHANNEL_TX_BYTES:
                     newState = StateUtil.bigIntOrNull(iface.getTxBytes());
                     break;
-                case CHANNEL_RX_BYTES:
+                case MikrotikBindingConstants.CHANNEL_RX_BYTES:
                     newState = StateUtil.bigIntOrNull(iface.getRxBytes());
                     break;
-                case CHANNEL_TX_PACKETS:
+                case MikrotikBindingConstants.CHANNEL_TX_PACKETS:
                     newState = StateUtil.bigIntOrNull(iface.getTxPackets());
                     break;
-                case CHANNEL_RX_PACKETS:
+                case MikrotikBindingConstants.CHANNEL_RX_PACKETS:
                     newState = StateUtil.bigIntOrNull(iface.getRxPackets());
                     break;
-                case CHANNEL_TX_DROPS:
+                case MikrotikBindingConstants.CHANNEL_TX_DROPS:
                     newState = StateUtil.bigIntOrNull(iface.getTxDrops());
                     break;
-                case CHANNEL_RX_DROPS:
+                case MikrotikBindingConstants.CHANNEL_RX_DROPS:
                     newState = StateUtil.bigIntOrNull(iface.getRxDrops());
                     break;
-                case CHANNEL_TX_ERRORS:
+                case MikrotikBindingConstants.CHANNEL_TX_ERRORS:
                     newState = StateUtil.bigIntOrNull(iface.getTxErrors());
                     break;
-                case CHANNEL_RX_ERRORS:
+                case MikrotikBindingConstants.CHANNEL_RX_ERRORS:
                     newState = StateUtil.bigIntOrNull(iface.getRxErrors());
                     break;
                 default:
@@ -189,11 +198,11 @@ public class MikrotikInterfaceThingHandler extends MikrotikBaseThingHandler<Inte
     protected State getEtherIterfaceChannelState(String channelID) {
         RouterosEthernetInterface etherIface = (RouterosEthernetInterface) iface;
         switch (channelID) {
-            case CHANNEL_DEFAULT_NAME:
+            case MikrotikBindingConstants.CHANNEL_DEFAULT_NAME:
                 return StateUtil.stringOrNull(etherIface.getDefaultName());
-            case CHANNEL_STATE:
+            case MikrotikBindingConstants.CHANNEL_STATE:
                 return StateUtil.stringOrNull(etherIface.getState());
-            case CHANNEL_RATE:
+            case MikrotikBindingConstants.CHANNEL_RATE:
                 return StateUtil.stringOrNull(etherIface.getRate());
             default:
                 return UnDefType.UNDEF;
@@ -203,13 +212,13 @@ public class MikrotikInterfaceThingHandler extends MikrotikBaseThingHandler<Inte
     protected State getCapIterfaceChannelState(String channelID) {
         RouterosCapInterface capIface = (RouterosCapInterface) iface;
         switch (channelID) {
-            case CHANNEL_STATE:
+            case MikrotikBindingConstants.CHANNEL_STATE:
                 return StateUtil.stringOrNull(capIface.getCurrentState());
-            case CHANNEL_RATE:
+            case MikrotikBindingConstants.CHANNEL_RATE:
                 return StateUtil.stringOrNull(capIface.getRateSet());
-            case CHANNEL_REGISTERED_CLIENTS:
+            case MikrotikBindingConstants.CHANNEL_REGISTERED_CLIENTS:
                 return StateUtil.intOrNull(capIface.getRegisteredClients());
-            case CHANNEL_AUTHORIZED_CLIENTS:
+            case MikrotikBindingConstants.CHANNEL_AUTHORIZED_CLIENTS:
                 return StateUtil.intOrNull(capIface.getAuthorizedClients());
             default:
                 return UnDefType.UNDEF;
@@ -219,13 +228,13 @@ public class MikrotikInterfaceThingHandler extends MikrotikBaseThingHandler<Inte
     protected State getWlanIterfaceChannelState(String channelID) {
         RouterosWlanInterface wlIface = (RouterosWlanInterface) iface;
         switch (channelID) {
-            case CHANNEL_STATE:
+            case MikrotikBindingConstants.CHANNEL_STATE:
                 return StateUtil.stringOrNull(wlIface.getCurrentState());
-            case CHANNEL_RATE:
+            case MikrotikBindingConstants.CHANNEL_RATE:
                 return StateUtil.stringOrNull(wlIface.getRate());
-            case CHANNEL_REGISTERED_CLIENTS:
+            case MikrotikBindingConstants.CHANNEL_REGISTERED_CLIENTS:
                 return StateUtil.intOrNull(wlIface.getRegisteredClients());
-            case CHANNEL_AUTHORIZED_CLIENTS:
+            case MikrotikBindingConstants.CHANNEL_AUTHORIZED_CLIENTS:
                 return StateUtil.intOrNull(wlIface.getAuthorizedClients());
             default:
                 return UnDefType.UNDEF;
@@ -235,11 +244,11 @@ public class MikrotikInterfaceThingHandler extends MikrotikBaseThingHandler<Inte
     protected State getPPPoECliChannelState(String channelID) {
         RouterosPPPoECliInterface pppCli = (RouterosPPPoECliInterface) iface;
         switch (channelID) {
-            case CHANNEL_STATE:
+            case MikrotikBindingConstants.CHANNEL_STATE:
                 return StateUtil.stringOrNull(pppCli.getStatus());
-            case CHANNEL_UP_TIME:
+            case MikrotikBindingConstants.CHANNEL_UP_TIME:
                 return StateUtil.stringOrNull(pppCli.getUptime());
-            case CHANNEL_UP_SINCE:
+            case MikrotikBindingConstants.CHANNEL_UP_SINCE:
                 return StateUtil.timeOrNull(pppCli.getUptimeStart());
             default:
                 return UnDefType.UNDEF;
@@ -249,11 +258,11 @@ public class MikrotikInterfaceThingHandler extends MikrotikBaseThingHandler<Inte
     protected State getL2TPSrvChannelState(String channelID) {
         RouterosL2TPSrvInterface vpnSrv = (RouterosL2TPSrvInterface) iface;
         switch (channelID) {
-            case CHANNEL_STATE:
+            case MikrotikBindingConstants.CHANNEL_STATE:
                 return StateUtil.stringOrNull(vpnSrv.getEncoding());
-            case CHANNEL_UP_TIME:
+            case MikrotikBindingConstants.CHANNEL_UP_TIME:
                 return StateUtil.stringOrNull(vpnSrv.getUptime());
-            case CHANNEL_UP_SINCE:
+            case MikrotikBindingConstants.CHANNEL_UP_SINCE:
                 return StateUtil.timeOrNull(vpnSrv.getUptimeStart());
             default:
                 return UnDefType.UNDEF;
@@ -263,11 +272,11 @@ public class MikrotikInterfaceThingHandler extends MikrotikBaseThingHandler<Inte
     protected State getL2TPCliChannelState(String channelID) {
         RouterosL2TPCliInterface vpnCli = (RouterosL2TPCliInterface) iface;
         switch (channelID) {
-            case CHANNEL_STATE:
+            case MikrotikBindingConstants.CHANNEL_STATE:
                 return StateUtil.stringOrNull(vpnCli.getEncoding());
-            case CHANNEL_UP_TIME:
+            case MikrotikBindingConstants.CHANNEL_UP_TIME:
                 return StateUtil.stringOrNull(vpnCli.getUptime());
-            case CHANNEL_UP_SINCE:
+            case MikrotikBindingConstants.CHANNEL_UP_SINCE:
                 return StateUtil.timeOrNull(vpnCli.getUptimeStart());
             default:
                 return UnDefType.UNDEF;
@@ -276,8 +285,9 @@ public class MikrotikInterfaceThingHandler extends MikrotikBaseThingHandler<Inte
 
     @Override
     protected void executeCommand(ChannelUID channelUID, Command command) {
-        if (iface == null)
+        if (iface == null) {
             return;
+        }
         logger.warn("Ignoring unsupported command = {} for channel = {}", command, channelUID);
     }
 }

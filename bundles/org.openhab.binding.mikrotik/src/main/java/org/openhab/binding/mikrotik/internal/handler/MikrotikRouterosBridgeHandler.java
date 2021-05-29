@@ -12,7 +12,6 @@
  */
 package org.openhab.binding.mikrotik.internal.handler;
 
-import static org.openhab.binding.mikrotik.internal.MikrotikBindingConstants.*;
 import static org.openhab.core.thing.ThingStatus.ONLINE;
 import static org.openhab.core.types.RefreshType.REFRESH;
 
@@ -29,7 +28,13 @@ import org.openhab.binding.mikrotik.internal.model.RouterosDevice;
 import org.openhab.binding.mikrotik.internal.model.RouterosRouterboardInfo;
 import org.openhab.binding.mikrotik.internal.model.RouterosSystemResources;
 import org.openhab.binding.mikrotik.internal.util.StateUtil;
-import org.openhab.core.thing.*;
+import org.openhab.core.thing.Bridge;
+import org.openhab.core.thing.Channel;
+import org.openhab.core.thing.ChannelUID;
+import org.openhab.core.thing.ThingStatus;
+import org.openhab.core.thing.ThingStatusDetail;
+import org.openhab.core.thing.ThingStatusInfo;
+import org.openhab.core.thing.ThingTypeUID;
 import org.openhab.core.thing.binding.BaseBridgeHandler;
 import org.openhab.core.thing.binding.ThingHandler;
 import org.openhab.core.thing.binding.builder.ThingStatusInfoBuilder;
@@ -143,9 +148,9 @@ public class MikrotikRouterosBridgeHandler extends BaseBridgeHandler {
                 RouterosRouterboardInfo rbInfo = routeros.getRouterboardInfo();
                 if (rbInfo != null) {
                     Map<String, String> bridgeProps = editProperties();
-                    bridgeProps.put(PROPERTY_MODEL, rbInfo.getModel());
-                    bridgeProps.put(PROPERTY_FIRMWARE, rbInfo.getFirmware());
-                    bridgeProps.put(PROPERTY_SERIAL_NUMBER, rbInfo.getSerialNumber());
+                    bridgeProps.put(MikrotikBindingConstants.PROPERTY_MODEL, rbInfo.getModel());
+                    bridgeProps.put(MikrotikBindingConstants.PROPERTY_FIRMWARE, rbInfo.getFirmware());
+                    bridgeProps.put(MikrotikBindingConstants.PROPERTY_SERIAL_NUMBER, rbInfo.getSerialNumber());
                     updateProperties(bridgeProps);
                 } else {
                     logger.warn("Failed to set RouterBOARD properties for bridge {}", getThing().getUID());
@@ -229,31 +234,31 @@ public class MikrotikRouterosBridgeHandler extends BaseBridgeHandler {
             newState = UnDefType.NULL;
         } else {
             switch (channelID) {
-                case CHANNEL_UP_TIME:
+                case MikrotikBindingConstants.CHANNEL_UP_TIME:
                     newState = StateUtil.stringOrNull(rbRes.getUptime());
                     break;
-                case CHANNEL_UP_SINCE:
+                case MikrotikBindingConstants.CHANNEL_UP_SINCE:
                     newState = StateUtil.timeOrNull(rbRes.getUptimeStart());
                     break;
-                case CHANNEL_FREE_SPACE:
+                case MikrotikBindingConstants.CHANNEL_FREE_SPACE:
                     newState = StateUtil.intOrNull(rbRes.getFreeSpace());
                     break;
-                case CHANNEL_TOTAL_SPACE:
+                case MikrotikBindingConstants.CHANNEL_TOTAL_SPACE:
                     newState = StateUtil.intOrNull(rbRes.getTotalSpace());
                     break;
-                case CHANNEL_USED_SPACE:
+                case MikrotikBindingConstants.CHANNEL_USED_SPACE:
                     newState = StateUtil.intOrNull(rbRes.getSpaceUse());
                     break;
-                case CHANNEL_FREE_MEM:
+                case MikrotikBindingConstants.CHANNEL_FREE_MEM:
                     newState = StateUtil.intOrNull(rbRes.getFreeMem());
                     break;
-                case CHANNEL_TOTAL_MEM:
+                case MikrotikBindingConstants.CHANNEL_TOTAL_MEM:
                     newState = StateUtil.intOrNull(rbRes.getTotalMem());
                     break;
-                case CHANNEL_USED_MEM:
+                case MikrotikBindingConstants.CHANNEL_USED_MEM:
                     newState = StateUtil.intOrNull(rbRes.getMemUse());
                     break;
-                case CHANNEL_CPU_LOAD:
+                case MikrotikBindingConstants.CHANNEL_CPU_LOAD:
                     newState = StateUtil.intOrNull(rbRes.getCpuLoad());
                     break;
             }

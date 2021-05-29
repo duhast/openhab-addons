@@ -50,8 +50,9 @@ public class StateUtil {
     }
 
     public static State boolOrNull(@Nullable Boolean value) {
-        if (value == null)
+        if (value == null) {
             return UnDefType.NULL;
+        }
         return value ? OnOffType.ON : OnOffType.OFF;
     }
 

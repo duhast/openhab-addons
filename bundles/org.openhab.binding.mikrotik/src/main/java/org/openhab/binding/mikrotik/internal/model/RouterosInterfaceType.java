@@ -12,11 +12,16 @@
  */
 package org.openhab.binding.mikrotik.internal.model;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * The {@link RouterosInterfaceType} enum wraps RouterOS network interface type strings.
  *
  * @author Oleg Vivtash - Initial contribution
  */
+
+@NonNullByDefault
 public enum RouterosInterfaceType {
     ETHERNET("ether"),
     BRIDGE("bridge"),
@@ -41,7 +46,8 @@ public enum RouterosInterfaceType {
         return this.typeName;
     }
 
-    public static RouterosInterfaceType resolve(String routerosType) {
+    @Nullable
+    public static RouterosInterfaceType resolve(@Nullable String routerosType) {
         for (RouterosInterfaceType current : RouterosInterfaceType.values()) {
             if (current.typeName.equals(routerosType)) {
                 return current;

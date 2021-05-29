@@ -37,8 +37,9 @@ public class Converter {
 
     @Nullable
     public static LocalDateTime fromRouterosTime(@Nullable String dateTimeString) {
-        if (dateTimeString == null)
+        if (dateTimeString == null) {
             return null;
+        }
         String fixedTs = dateTimeString.substring(0, 1).toUpperCase() + dateTimeString.substring(1);
         return LocalDateTime.parse(fixedTs, ROUTEROS_FORMAT);
     }
@@ -50,8 +51,9 @@ public class Converter {
 
     @Nullable
     public static LocalDateTime routerosPeriodBack(@Nullable String durationString, LocalDateTime fromDateTime) {
-        if (durationString == null)
+        if (durationString == null) {
             return null;
+        }
 
         Matcher m = PERIOD_PATTERN.matcher(durationString);
         LocalDateTime ts = fromDateTime;
